@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agentic AI: The Future of Automation</title>
+
+    <!-- Fonts: Unbounded for futuristic display, Space Grotesk for readable body -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Space+Grotesk:wght@400;500;700&display=swap" />
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME: ANTI-GRAVITY)
+           =========================================== */
+        :root {
+            --bg-cosmic: #050510;
+            --accent-nebula: #8a2be2;
+            --accent-cyan: #00ffff;
+            --text-white: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            
+            --font-display: 'Unbounded', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+            
+            --duration-normal: 0.8s;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Viewport scaling */
+            --title-size: clamp(2rem, 8vw, 4.5rem);
+            --h2-size: clamp(1.5rem, 5vw, 3rem);
+            --body-size: clamp(0.9rem, 1.8vw, 1.25rem);
+            --slide-padding: clamp(1.5rem, 5vw, 6rem);
+            --content-gap: clamp(1rem, 3vw, 3rem);
+        }
+
+        /* ===========================================
+           BASE STYLES & VIEWPORT FITTING
+           =========================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-cosmic);
+            color: var(--text-white);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: var(--slide-padding);
+        }
+
+        canvas#starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ===========================================
+           COMPONENTS: GLASS CARDS & FLOATING
+           =========================================== */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: clamp(2rem, 5vw, 4rem);
+            border-radius: 32px;
+            max-width: min(90vw, 1100px);
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes floating-drift {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(0.5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .floating {
+            animation: floating-drift 5s ease-in-out infinite;
+        }
+
+        /* ===========================================
+           TYPOGRAPHY & CONTENT
+           =========================================== */
+        h1, h2 {
+            font-family: var(--font-display);
+            line-height: 1.1;
+            margin-bottom: 0.5em;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: var(--title-size);
+            background: linear-gradient(135deg, #fff 30%, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 { font-size: var(--h2-size); color: var(--accent-cyan); }
+
+        p, li {
+            font-size: var(--body-size);
+            line-height: 1.5;
+            color: var(--text-dim);
+            margin-bottom: 1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .feature-item h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===========================================
+           ANIMATIONS (REVEAL)
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(2) { transition-delay: 0.2s; }
+        .reveal:nth-child(3) { transition-delay: 0.4s; }
+        .reveal:nth-child(4) { transition-delay: 0.6s; }
+
+        /* ===========================================
+           NAVIGATION & UI
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-cyan);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-cyan);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dot.active { background: var(--accent-cyan); }
+
+        /* ===========================================
+           INLINE EDITING UI
+           =========================================== */
+        .edit-hotzone {
+            position: fixed;
+            top: 0; left: 0;
+            width: 80px; height: 80px;
+            z-index: 10000;
+            cursor: pointer;
+        }
+        .edit-toggle {
+            position: fixed;
+            top: 20px; left: 20px;
+            width: 44px; height: 44px;
+            background: var(--accent-nebula);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10001;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+        .edit-toggle.active { background: #00ff00; transform: scale(1.1); }
+        
+        body.edit-active [contenteditable="true"] {
+            outline: 1px dashed var(--accent-cyan);
+            outline-offset: 4px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- INLINE EDITING UI -->
+    <div class="edit-hotzone"></div>
+    <button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️</button>
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide">
+        <div class="glass-card floating">
+            <h1 class="reveal" contenteditable="true">Agentic AI</h1>
+            <p class="reveal" style="font-family: var(--font-display); letter-spacing: 2px; color: var(--accent-cyan);" contenteditable="true">The Future of Automation</p>
+            <p class="reveal" contenteditable="true">Professional Implementation Services for the Era of Autonomous Systems.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: THE PROBLEM -->
+    <section class="slide">
+        <div class="glass-card">
+            <h2 class="reveal" contenteditable="true">The Efficiency Bottleneck</h2>
+            <div class="grid">
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Rigid Workflows</h3>
+                    <p contenteditable="true">Traditional automation breaks when conditions change. Legacy systems can't adapt.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Manual Oversight</h3>
+                    <p contenteditable="true">Humans remain stuck in the loop for planning and reasoning, slowing down operations.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Scalability Limits</h3>
+                    <p contenteditable="true">Growing manual processes requires linear headcount growth, leading to diminishing returns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: THE SOLUTION -->
+    <section class="slide">
+        <div class="glass-card floating">
+            <h2 class="reveal" contenteditable="true">The Agentic Era</h2>
+            <p class="reveal" contenteditable="true">We transition your business from "Automation" to "Autonomy."</p>
+            <div class="grid">
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Reason & Plan</h3>
+                    <p contenteditable="true">Agents use LLMs to break down complex goals into actionable tasks.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Tool Interaction</h3>
+                    <p contenteditable="true">Our agents autonomously use your existing software, APIs, and databases.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Self-Correction</h3>
+                    <p contenteditable="true">Agents monitor their own performance and fix errors without human intervention.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: OUR SERVICES -->
+    <section class="slide">
+        <div class="glass-card">
+            <h2 class="reveal" contenteditable="true">Implementation Services</h2>
+            <div class="grid">
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Custom Agent Dev</h3>
+                    <p contenteditable="true">Tailored autonomous systems built for your specific business domain.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Legacy Integration</h3>
+                    <p contenteditable="true">Connecting agentic intelligence to your existing enterprise stack safely.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">LLM Fine-Tuning</h3>
+                    <p contenteditable="true">Optimizing models for specific tool-use and reasoning patterns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: KEY BENEFITS -->
+    <section class="slide">
+        <div class="glass-card floating">
+            <h2 class="reveal" contenteditable="true">Exponential Growth</h2>
+            <div class="grid">
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Infinite Scalability</h3>
+                    <p contenteditable="true">Deploy thousands of agents to handle seasonal spikes or rapid expansion.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">24/7 Operations</h3>
+                    <p contenteditable="true">Agents never sleep, ensuring your business runs at peak performance around the clock.</p>
+                </div>
+                <div class="feature-item reveal">
+                    <h3 contenteditable="true">Zero-Error Precision</h3>
+                    <p contenteditable="true">Deterministic execution combined with adaptive reasoning eliminates manual errors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: CASE STUDY -->
+    <section class="slide">
+        <div class="glass-card">
+            <h2 class="reveal" contenteditable="true">Impact Realized</h2>
+            <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="reveal">
+                    <h3 contenteditable="true" style="color: var(--accent-cyan); font-size: 3rem;">90%</h3>
+                    <p contenteditable="true">Reduction in manual ticket processing for a Fortune 500 logistics provider.</p>
+                </div>
+                <div class="reveal">
+                    <h3 contenteditable="true" style="color: var(--accent-cyan); font-size: 3rem;">4x</h3>
+                    <p contenteditable="true">Throughput increase in data synthesis and reporting workflows.</p>
+                </div>
+            </div>
+            <p class="reveal" style="margin-top: 2rem; font-style: italic;" contenteditable="true">"The shift to Agentic AI was the single biggest ROI project of our decade." — CTO, Global Logistics</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: CALL TO ACTION -->
+    <section class="slide">
+        <div class="glass-card floating" style="text-align: center;">
+            <h2 class="reveal" contenteditable="true">Build Your Agentic Future</h2>
+            <p class="reveal" contenteditable="true">The era of autonomous work is here. Don't be left behind.</p>
+            <div class="reveal" style="margin-top: 2rem;">
+                <p contenteditable="true" style="color: #fff; font-weight: 700;">contact@agentic-services.ai</p>
+                <p contenteditable="true">www.agentic-services.ai</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        /* ===========================================
+           STARFIELD BACKGROUND (CANVAS)
+           =========================================== */
+        class Starfield {
+            constructor() {
+                this.canvas = document.getElementById('starfield');
+                this.ctx = this.canvas.getContext('2d');
+                this.stars = [];
+                this.resize();
+                this.init();
+                this.animate();
+                window.addEventListener('resize', () => this.resize());
+            }
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            init() {
+                this.stars = [];
+                for (let i = 0; i < 200; i++) {
+                    this.stars.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 2,
+                        speed: Math.random() * 0.5 + 0.1
+                    });
+                }
+            }
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = 'white';
+                this.stars.forEach(star => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    star.y -= star.speed;
+                    if (star.y < 0) star.y = this.canvas.height;
+                });
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        /* ===========================================
+           PRESENTATION CONTROLLER
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.progressBar = document.getElementById('progressBar');
+                this.navDots = document.getElementById('navDots');
+                this.setupObserver();
+                this.setupNavigation();
+                this.setupDots();
+            }
+
+            setupObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.updateActiveDot();
+                        }
+                    });
+                }, { threshold: 0.5 });
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupNavigation() {
+                document.addEventListener('keydown', (e) => {
+                    if (document.body.classList.contains('edit-active')) return;
+                    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+                        e.preventDefault();
+                        this.scrollNext();
+                    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                        e.preventDefault();
+                        this.scrollPrev();
+                    }
+                });
+
+                window.addEventListener('scroll', () => {
+                    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                    this.progressBar.style.width = `${scrollPercent}%`;
+                });
+            }
+
+            setupDots() {
+                this.navDots.innerHTML = '';
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.onclick = () => this.slides[i].scrollIntoView();
+                    this.navDots.appendChild(dot);
+                });
+                this.updateActiveDot();
+            }
+
+            updateActiveDot() {
+                const current = Math.round(window.scrollY / window.innerHeight);
+                const dots = document.querySelectorAll('.dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === current);
+                });
+            }
+
+            scrollNext() {
+                const current = Math.round(window.scrollY / window.innerHeight);
+                if (current < this.slides.length - 1) {
+                    this.slides[current + 1].scrollIntoView();
+                }
+            }
+
+            scrollPrev() {
+                const current = Math.round(window.scrollY / window.innerHeight);
+                if (current > 0) {
+                    this.slides[current - 1].scrollIntoView();
+                }
+            }
+        }
+
+        /* ===========================================
+           INLINE EDITOR CONTROLLER
+           =========================================== */
+        class InlineEditor {
+            constructor() {
+                this.isActive = false;
+                this.toggleBtn = document.getElementById('editToggle');
+                this.hotzone = document.querySelector('.edit-hotzone');
+                this.hideTimeout = null;
+                this.setupHandlers();
+            }
+
+            setupHandlers() {
+                // Hotzone hover
+                this.hotzone.addEventListener('mouseenter', () => {
+                    clearTimeout(this.hideTimeout);
+                    this.toggleBtn.classList.add('show');
+                });
+                this.hotzone.addEventListener('mouseleave', () => {
+                    this.hideTimeout = setTimeout(() => {
+                        if (!this.isActive) this.toggleBtn.classList.remove('show');
+                    }, 400);
+                });
+                
+                // Toggle click
+                this.toggleBtn.addEventListener('click', () => this.toggleEditMode());
+                this.hotzone.addEventListener('click', () => this.toggleEditMode());
+
+                // Keyboard
+                document.addEventListener('keydown', (e) => {
+                    if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) {
+                        this.toggleEditMode();
+                    }
+                    if (e.ctrlKey && e.key === 's') {
+                        e.preventDefault();
+                        if (this.isActive) this.exportFile();
+                    }
+                });
+            }
+
+            toggleEditMode() {
+                this.isActive = !this.isActive;
+                document.body.classList.toggle('edit-active', this.isActive);
+                this.toggleBtn.classList.toggle('active', this.isActive);
+                this.toggleBtn.innerText = this.isActive ? '✓' : '✏️';
+                
+                const editables = document.querySelectorAll('[contenteditable]');
+                editables.forEach(el => el.setAttribute('contenteditable', this.isActive ? 'true' : 'false'));
+                
+                if (!this.isActive) {
+                    // Flash success
+                    this.toggleBtn.style.background = '#00ff00';
+                    setTimeout(() => this.toggleBtn.style.background = '', 500);
+                }
+            }
+
+            exportFile() {
+                const editToggle = document.getElementById('editToggle');
+                const editableEls = Array.from(document.querySelectorAll('[contenteditable]'));
+                
+                // Cleanup for export
+                editableEls.forEach(el => el.removeAttribute('contenteditable'));
+                document.body.classList.remove('edit-active');
+                editToggle.classList.remove('active', 'show');
+
+                const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+                // Restore state
+                if (this.isActive) {
+                    document.body.classList.add('edit-active');
+                    editableEls.forEach(el => el.setAttribute('contenteditable', 'true'));
+                    editToggle.classList.add('active', 'show');
+                }
+
+                const blob = new Blob([html], { type: 'text/html' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'agentic-ai-pitch.html';
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+        }
+
+        // Initialize everything
+        new Starfield();
+        new SlidePresentation();
+        new InlineEditor();
+    </script>
+</body>
+</html>

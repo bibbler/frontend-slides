@@ -83,8 +83,7 @@ else
 fi
 
 # Resolve output to absolute path
-OUTPUT_DIR=$(dirname "$OUTPUT_PDF")
-mkdir -p "$OUTPUT_DIR"
+OUTPUT_DIR=$(cd "$(dirname "$OUTPUT_PDF")" && pwd)
 OUTPUT_PDF="$OUTPUT_DIR/$(basename "$OUTPUT_PDF")"
 
 echo ""
