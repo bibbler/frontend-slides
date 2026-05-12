@@ -11,7 +11,8 @@ Use this reference when generating presentations. Match animations to the intend
 | **Playful / Friendly** | Bouncy easing (spring physics), floating/bobbing | Rounded corners, pastel/bright colors, hand-drawn elements |
 | **Professional / Corporate** | Subtle fast animations (200-300ms), clean slides | Navy/slate/charcoal, precise spacing, data visualization focus |
 | **Calm / Minimal** | Very slow subtle motion, gentle fades | High whitespace, muted palette, serif typography, generous padding |
-| **Editorial / Magazine** | Staggered text reveals, image-text interplay | Strong type hierarchy, pull quotes, grid-breaking layouts, serif headlines + sans body |
+| Editorial / Magazine | Staggered text reveals, image-text interplay | Strong type hierarchy, pull quotes, grid-breaking layouts, serif headlines + sans body |
+| **Weightless / Floating** | Slow vertical oscillation (2-4s), floating particles, glass blur | Deep cosmic navy, glowing cyan/purple, Unbounded font, high transparency cards |
 
 ## Entrance Animations
 
@@ -28,7 +29,18 @@ Use this reference when generating presentations. Match animations to the intend
     transform: translateY(0);
 }
 
+/* Floating Drift (Anti-Gravity style) */
+@keyframes floating-drift {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+.floating {
+    animation: floating-drift 4s ease-in-out infinite;
+}
+
 /* Scale In */
+
 .reveal-scale {
     opacity: 0;
     transform: scale(0.9);

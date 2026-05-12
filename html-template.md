@@ -188,6 +188,12 @@ Every presentation must include:
    - Export/save file functionality
    - See "Inline Editing Implementation" section below
 
+5. **Anti-Gravity Effects** (for Weightless/Futuristic vibes):
+   - **Vertical Oscillation**: Apply `.floating` class with `animation: floating-drift 4s ease-in-out infinite`.
+   - **Particle Starfield**: Lightweight canvas background with drifting dots.
+   - **Glass Cards**: `backdrop-filter: blur(10px)` with semi-transparent backgrounds.
+   - **Magnetic Elements**: Subtle drift toward the mouse cursor.
+
 ## Inline Editing Implementation (Opt-In Only)
 
 **If the user chose "No" for inline editing in Phase 1, do NOT generate any edit-related HTML, CSS, or JS.**

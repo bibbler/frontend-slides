@@ -298,6 +298,36 @@ Curated visual styles for Frontend Slides. Each preset is inspired by real desig
 
 ---
 
+### 13. Anti-Gravity
+
+**Vibe:** Weightless, floating, ethereal, futuristic, clean
+
+**Layout:** Floating content cards on a deep cosmic background. Elements appear to drift slowly.
+
+**Typography:**
+- Display: `Unbounded` (700/800) — futuristic and wide
+- Body: `Space Grotesk` (400/500)
+
+**Colors:**
+```css
+:root {
+    --bg-cosmic: #050510;
+    --accent-nebula: #8a2be2;
+    --accent-cyan: #00ffff;
+    --text-white: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+```
+
+**Signature Elements:**
+- **Vertical floating animation** on all major components
+- Glassmorphism cards with very subtle borders and background blur
+- Glowing neon accents (cyan and purple)
+- Deep navy/black background with a subtle radial gradient
+
+---
+
 ## Font Pairing Quick Reference
 
 | Preset | Display Font | Body Font | Source |
@@ -312,6 +342,7 @@ Curated visual styles for Frontend Slides. Each preset is inspired by real desig
 | Vintage Editorial | Fraunces | Work Sans | Google |
 | Neon Cyber | Clash Display | Satoshi | Fontshare |
 | Terminal Green | JetBrains Mono | JetBrains Mono | JetBrains |
+| Anti-Gravity | Unbounded | Space Grotesk | Google |
 
 ---
 
